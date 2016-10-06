@@ -1,9 +1,5 @@
 {
-  "plugins": [
-    "syntax-function-bind",
-    "transform-function-bind"
-  ],
   "presets": [
-    "es2016"
+    "es2015"
   ]
 }

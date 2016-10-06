@@ -1,5 +1,5 @@
 let R = require("ramda")
-let {append, curry, identity, map, not, repeat, split, takeLast} = require("ramda")
+let {append, curry, identity, map, not, repeat, split, takeLast} = R;
 let memoize = require("memoizee")
 let {Observable: $} = require("rx")
 
@@ -45,6 +45,10 @@ let store = curry((seed, update) => {
     .distinctUntilChanged()
     .shareReplay(1)
 })
+
+let toStore = function(seed) {
+  return store(seed, this)
+}
 
 // Make observable of n last upstream values.
 // Number -> $ [s]
@@ -124,19 +128,19 @@ let toSetState = function (path, fn) {
 // Apply function to state fragment.
 // String, (sf -> sf) -> $ (s -> s)
 let overState = function (path, fn) {
-  return this::toOverState(path, always(fn))
+  return toOverState.call(this, path, always(fn))
 }
 
 // Replace state fragment with a value. Upstream value does not matter.
 // String, v -> $ (s -> s)
 let setState = function (path, v) {
-  return this::toSetState(path, always(v))
+  return toSetState.call(this, path, always(v))
 }
 
 // Replace state fragment with upstream value.
 // String -> $ (s -> s)
 let toState = function (path) {
-  return this::toSetState(path, identity)
+  return toSetState.call(this, path, identity)
 }
 
 // Filtering & sampling
@@ -150,25 +154,25 @@ let filterBy = function (o) {
 // Filter observable by another observable (true = drop).
 // $ Boolean -> $ u
 let rejectBy = function (o) {
-  return this::filterBy(o.map(not))
+  return filterBy.call(this, o.map(not))
 }
 
 // Pass upstream value futher if its fragment satisfies a predicate.
 // String, v -> $ u
 let at = function (path, filterFn) {
-  return this.sample(this::pluck(path).filter(filterFn))
+  return this.sample(pluck.call(this, path).filter(filterFn))
 }
 
 // Pass upstream value futher if it's fragment is true.
 // String -> $ u
 let atTrue = function (path) {
-  return this::at(path, identity)
+  return at.call(this, path, identity)
 }
 
 // Pass upstream value futher if its fragment is false.
 // String -> $ u
 let atFalse = function (path) {
-  return this::at(path, not(identity))
+  return at.call(this, path, not(identity))
 }
 
 // Other
@@ -188,7 +192,7 @@ let render = curry((viewFn, os) => {
 exports.scanFn = scanFn
 
 // State core
-exports.store = store
+exports.toStore = toStore
 exports.history = history
 exports.derive = derive
 exports.deriveN = deriveN
