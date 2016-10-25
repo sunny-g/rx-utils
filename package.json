@@ -1,6 +1,6 @@
 {
   "name": "@sunny-g/rx-utils",
-  "version": "1.0.4-beta.1",
+  "version": "2.0.0-beta.1",
   "author": "Ivan Kleshnin",
   "description": "High-level RxJS utils",
   "license": "MIT",
