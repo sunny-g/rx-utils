@@ -179,7 +179,7 @@ let atFalse = function (path) {
 
 // Apply a function over observable values in a glitch-free way.
 // (... -> a), [$ *] -> $ a
-let render = curry((viewFn, os) => {
+let render = curry((os, viewFn) => {
   return $
     .combineLatest(...os)
     .debounce(1)

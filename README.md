@@ -314,5 +314,14 @@ Apply a function over observable values in a glitch-free way.
 ##### Example
 
 ```js
-let DOM = render(gameView, [state, derived.flags])
+let view$ = render(
+  [ state$, props.get('displayText') ],
+  ({ isLoading }, displayText) => (
+    <div>
+      {isLoading
+        ? 'Loading...'
+        : displayText
+      }
+    </div>
+  ))
 ```
